@@ -13,7 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="canonical" href="https://www.salinitymaritime.com/">
 
-
   <style>
   :root{
     --ink:#e8f1f7;
@@ -66,20 +65,16 @@
   .btn{
     border:1px solid var(--border); color:#06101a; background:var(--accent);
     padding:8px 12px; border-radius:999px; font-weight:600; font-size:13px; text-decoration:none;
-  }/* Desktop nav Contact button, not bright by default */
-nav .links .btn{
-  background: transparent;        /* no white fill */
-  color: var(--ink);
-  border-color: var(--border);
-}
-nav .links .btn:hover{
-  background: rgba(255,255,255,.08);  /* subtle hover */
-}
-/* When the Contact section is in view, show the filled style */
-nav .links .btn[aria-current="true"]{
-  background: var(--accent);
-  color:#06101a;
-}
+  }
+  /* Desktop nav Contact button – not bright until its section is active */
+  nav .links .btn{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--border);
+  }
+  nav .links .btn:hover{ background: rgba(255,255,255,.08); }
+  nav .links .btn[aria-current="true"]{ background: var(--accent); color:#06101a; }
+
   .btn:hover{ filter:brightness(1.05); }
   a:focus-visible, .btn:focus-visible, .hamburger:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .link{ color:var(--accent); text-decoration:underline; text-underline-offset:2px; padding:8px 6px; }
@@ -130,16 +125,20 @@ nav .links .btn[aria-current="true"]{
   .hero{ padding:88px 0 48px; }
   .hero .panel{ text-align:center; padding:40px 28px; }
   h1{ margin:0 0 10px; font-weight:700; font-size:48px; letter-spacing:.2px; }
-  /* 5s glow pulse, per request */
-  h1 .accomplished {
-    color: var(--ink);
-    white-space: nowrap;
-    animation: breathing-glow 5s ease-in-out infinite;
-  }
+
+  /* “; accomplished” — keeps glow, adapts on small screens */
+  h1 .accomplished{ color:var(--ink); }
+  h1 .accomplished .word{ white-space:nowrap; animation: breathing-glow 5s ease-in-out infinite; }
   @keyframes breathing-glow {
-    0%, 100% { text-shadow: 0 0 5px rgba(232, 241, 247, 0.30); }
-    50%       { text-shadow: 0 0 15px rgba(232, 241, 247, 0.60); }
+    0%, 100% { text-shadow: 0 0 5px rgba(232,241,247,.30); }
+    50%      { text-shadow: 0 0 15px rgba(232,241,247,.60); }
   }
+  @media (max-width: 640px){
+    h1{ font-size:28px; }
+    h1 .accomplished{ display:block; margin-top:8px; font-size:.8em; line-height:1.1; }
+    h1 .accomplished .semi{ display:none; } /* hide the leading semicolon on very small screens */
+  }
+
   h1 + .hr{ border:0; height:2px; width:80px; background:var(--accent); margin:20px auto; opacity:0.7; }
   .lead{ color:#cfe0eb; margin:0 auto 18px; max-width:760px; font-size:18px; }
   .actions{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
@@ -205,7 +204,7 @@ nav .links .btn[aria-current="true"]{
   }
   @media (max-width: 640px){
     .values-grid, .stats, .cards, .platform-cards { grid-template-columns:1fr; }
-    h1{ font-size:28px; }
+    /* h1 size override above applies here too */
   }
   </style>
 </head>
@@ -260,7 +259,13 @@ nav .links .btn[aria-current="true"]{
   <section class="hero" id="home" aria-labelledby="hero-title">
     <div class="container">
       <div class="panel">
-        <h1 id="hero-title">Complex Ship Repair & Sustainment<span class="accomplished">; accomplished</span></h1>
+        <h1 id="hero-title">
+          Complex Ship Repair & Sustainment
+          <span class="accomplished">
+            <span class="semi" aria-hidden="true">; </span>
+            <span class="word">accomplished</span>
+          </span>
+        </h1>
         <hr class="hr">
         <p class="lead">We partner with contractors and program offices to manage complex vessel sustainment programs, modernize shipyard operations, and deliver results. We provide clear plans, reliable execution, and on-time mission readiness.</p>
         <div class="actions">
@@ -384,7 +389,7 @@ nav .links .btn[aria-current="true"]{
                   <li>RO/RO</li>
                   <li>Cable Ships</li>
                   <li>Factory Trawlers</li>
-		  <li>Fishing Vessels</li>
+		          <li>Fishing Vessels</li>
                   <li>Tug Boats</li>
                   <li>Barges</li>
                 </ul>
@@ -427,20 +432,21 @@ nav .links .btn[aria-current="true"]{
   </section>
 
   <!-- Contact -->
-<section id="contact" aria-labelledby="contact-title">
-  <div class="container">
-    <div class="panel centered-text">
-      <h2 id="contact-title" class="h2">Contact</h2>
-      <div class="contact-grid">
-        <p class="lead" style="margin-bottom: 24px;">
-          Send inquiries to discuss partnership opportunities for major sustainment programs,
-          operational challenges, or long-term strategic support goals.
-        </p>
-        <a class="btn" href="mailto:hello@salinitymaritime.com">hello@salinitymaritime.com</a>
+  <section id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="panel centered-text">
+        <h2 id="contact-title" class="h2">Contact</h2>
+        <div class="contact-grid">
+          <p class="lead" style="margin-bottom: 24px;">
+            Send inquiries to discuss partnership opportunities for major sustainment programs,
+            operational challenges, or long-term strategic support goals.
+          </p>
+          <!-- Email obfuscation: href is set by JS on load -->
+          <a class="btn" id="contact-link">hello@salinitymaritime.com</a>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </main>
 
 <footer>
@@ -547,10 +553,11 @@ nav .links .btn[aria-current="true"]{
 
   // ---- Perf/behavior knobs ----
   const DPR_CAP = 1.5;
-  const SCALE = 0.22;           // internal texture scale
+  const SCALE = 0.22;                 // internal texture scale
   const RESIZE_REDRAW_DELAY_MS = 120; // debounce for resize/orientation
+
   // ONE SHOT MODE is true on phones / coarse pointers OR when reduced motion is enabled
-  const mqCoarse = matchMedia('(hover: none) and (pointer: coarse)');
+  const mqCoarse  = matchMedia('(hover: none) and (pointer: coarse)');
   const mqReduced = matchMedia('(prefers-reduced-motion: reduce)');
   function isOneShot(){
     return mqCoarse.matches || mqReduced.matches || window.innerWidth < 640;
@@ -644,23 +651,36 @@ nav .links .btn[aria-current="true"]{
     const cw = tex.width, ch = tex.height;
     const t = ts * 0.000008;
 
+    /* --- Aspect-correct sampling to avoid vertical stretch on tall iPhones --- */
+    const k  = Math.min(cw, ch);
+    const sx = k / cw;   // scale X samples to min dimension
+    const sy = k / ch;   // scale Y samples to min dimension
+    const aspect = cw / ch;
+
     const baseS = 0.010, flowS = 0.0045, warp = 22, grainMix = 0.06;
     const cx = 0.52, cy = 0.46;
 
     let i=0;
     for(let y=0;y<ch;y++){
-      const ny = y/ch;
       for(let x=0;x<cw;x++){
-        const nx = x/cw;
-        const vx = noise(x*flowS + t*12, y*flowS);
-        const vy = noise(x*flowS, y*flowS + t*12);
+        // flow field (aspect-correct)
+        const vx = noise(x*flowS*sx + t*12, y*flowS*sy);
+        const vy = noise(x*flowS*sx,        y*flowS*sy + t*12);
         const ox = warp * vx, oy = warp * vy;
-        let v = fbm((x+ox)*baseS + t*6, (y+oy)*baseS - t*6, 5, 1.95, 0.55);
-        const dx = nx - cx, dy = ny - cy;
+
+        // main fbm (aspect-correct)
+        let v = fbm((x+ox)*baseS*sx + t*6, (y+oy)*baseS*sy - t*6, 5, 1.95, 0.55);
+
+        // isotropic radial center (scale Y by aspect so circle stays round)
+        const nx = x/cw, ny = y/ch;
+        const dx = nx - cx, dy = (ny - cy) * aspect;
         const center = Math.max(0, 1 - Math.sqrt(dx*dx + dy*dy) / 0.9);
         v = 0.88*v + 0.12*center;
-        const gr = fbm(x*0.12+100, y*0.12+200, 2, 2.1, 0.6);
+
+        // fine grain
+        const gr = fbm(x*0.12*sx+100, y*0.12*sy+200, 2, 2.1, 0.6);
         v = Math.min(1, Math.max(0, v + (gr - 0.5) * grainMix));
+
         const {r,g,b} = rampBlueCard(v);
         data[i++] = r; data[i++] = g; data[i++] = b; data[i++] = 255;
       }
@@ -673,76 +693,63 @@ nav .links .btn[aria-current="true"]{
   }
 
   // ---- Run mode selection ----
-// Stop after 15 seconds on desktop. Change 15000 if you want.
-const STOP_AFTER_MS = 15000;
+  const STOP_AFTER_MS = 15000; // 15s desktop animation cap
 
-let rafId = null, last = 0, startTs = 0;
-function animate(ts){
-  if (!startTs) startTs = ts;
-  const elapsed = ts - startTs;
+  let rafId = null, last = 0, startTs = 0;
+  function animate(ts){
+    if (!startTs) startTs = ts;
+    const elapsed = ts - startTs;
 
-  // cap to ~30 fps
-  if (ts - last >= (1000 / 30)) {
-    last = ts;
-    drawFrame(ts);
+    // cap to ~30 fps
+    if (ts - last >= (1000 / 30)) { last = ts; drawFrame(ts); }
+
+    if (elapsed >= STOP_AFTER_MS) { rafId = null; return; }
+    rafId = requestAnimationFrame(animate);
   }
-
-  // stop scheduling frames after the limit
-  if (elapsed >= STOP_AFTER_MS) {
-    rafId = null;   // important: mark as stopped so resize can trigger renderOnce()
-    return;
-  }
-
-  rafId = requestAnimationFrame(animate);
-}
 
   function renderOnce(){
-    // Draw a single frame (using current time) and stop
     if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
     drawFrame(performance.now());
   }
 
   // Initial sizing + first paint
   resize();
-  if (isOneShot()){
-    renderOnce(); // ONE SHOT MODE: draw one frame on load
-  } else {
-    // Desktop / full animation allowed
-    requestAnimationFrame(animate);
-  }
+  if (isOneShot()){ renderOnce(); } else { requestAnimationFrame(animate); }
 
   // Redraw single frame on resize/orientation in one-shot mode
   let tResize;
-function onResized(){
-  clearTimeout(tResize);
-  tResize = setTimeout(()=>{
-    resize();
-    // Redraw if we are in one-shot mode, or if desktop animation has already stopped
-    if (isOneShot() || !rafId){
-      renderOnce();
-    }
-  }, RESIZE_REDRAW_DELAY_MS);
-}
+  function onResized(){
+    clearTimeout(tResize);
+    tResize = setTimeout(()=>{
+      resize();
+      if (isOneShot() || !rafId){ renderOnce(); }
+    }, RESIZE_REDRAW_DELAY_MS);
+  }
   addEventListener('resize', onResized, { passive:true });
 
-  // React to changes in media queries (user toggling reduced motion, device changing pointer type)
-  if (mqCoarse.addEventListener) {
-    mqCoarse.addEventListener('change', ()=> { onResized(); });
-  } else if (mqCoarse.addListener) {
-    mqCoarse.addListener(()=> { onResized(); });
-  }
-  if (mqReduced.addEventListener) {
-    mqReduced.addEventListener('change', ()=> { onResized(); });
-  } else if (mqReduced.addListener) {
-    mqReduced.addListener(()=> { onResized(); });
-  }
+  // React to MQ changes
+  if (mqCoarse.addEventListener) mqCoarse.addEventListener('change', onResized);
+  else if (mqCoarse.addListener) mqCoarse.addListener(onResized);
+  if (mqReduced.addEventListener) mqReduced.addEventListener('change', onResized);
+  else if (mqReduced.addListener) mqReduced.addListener(onResized);
 
-  // If tab becomes visible again, in one-shot mode refresh the frame (cheap and keeps it crisp after long sleeps)
-  document.addEventListener('visibilitychange', ()=> {
-    if (!document.hidden && isOneShot()){
-      renderOnce();
-    }
-  });
+  // Refresh one-shot frame if tab becomes visible again
+  document.addEventListener('visibilitychange', ()=> { if (!document.hidden && isOneShot()) renderOnce(); });
+})();
+</script>
+
+<!-- ========= Email obfuscation ========= -->
+<script>
+(function(){
+  // Protect the contact email link
+  const contactLink = document.getElementById('contact-link');
+  if (contactLink) {
+    const user = 'hello';
+    const domain = 'salinitymaritime.com';
+    contactLink.setAttribute('href', 'mailto:' + user + '@' + domain);
+    contactLink.setAttribute('rel', 'nofollow');
+    // contactLink.textContent = user + '@' + domain; // already present
+  }
 })();
 </script>
 </body>
