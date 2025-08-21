@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Salinity Maritime • Complex Ship Repair & Sustainment</title>
 
-  <!-- Updated metadata to match current messaging -->
   <meta name="description" content="We partner with contractors and program offices to manage complex vessel sustainment programs, modernize shipyard operations, and deliver results. Clear plans, reliable execution, on‑time mission readiness." />
   <meta name="theme-color" content="#07111a" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,7 +134,7 @@
   }
   @media (max-width: 640px){
     h1{ font-size:28px; }
-    h1 .accomplished{ display:block; margin-top:8px; font-size:.8em; line-height:1.1; }
+    h1 .accomplished{ display:block; margin-top:8px; line-height:1.1; }
     h1 .accomplished .semi{ display:none; } /* hide the leading semicolon on very small screens */
   }
 
@@ -211,23 +210,19 @@
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- Background -->
 <canvas id="background-canvas" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
 
-<!-- Header -->
 <header class="site">
   <div class="wrap">
     <a href="#home" class="brand" aria-label="Salinity Maritime, home">Salinity Maritime</a>
     <nav aria-label="Primary">
-      <!-- Mobile hamburger -->
       <button class="hamburger" aria-controls="mobile-nav-list" aria-expanded="false" aria-label="Open menu">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </button>
 
-      <!-- Desktop links -->
       <ul class="links" role="list">
         <li><a href="#purpose">Purpose & Values</a></li>
         <li><a href="#experience">Experience</a></li>
@@ -239,10 +234,8 @@
   </div>
 </header>
 
-<!-- Scrim for mobile drawer -->
 <div class="scrim" hidden></div>
 
-<!-- Mobile drawer -->
 <nav class="mobile-nav" id="mobile-nav-list" aria-label="Mobile">
   <ul>
     <li><a href="#purpose">Purpose & Values</a></li>
@@ -253,9 +246,7 @@
   </ul>
 </nav>
 
-<!-- Content -->
 <main id="main">
-  <!-- Hero -->
   <section class="hero" id="home" aria-labelledby="hero-title">
     <div class="container">
       <div class="panel">
@@ -276,7 +267,6 @@
     </div>
   </section>
 
-  <!-- Purpose & Values -->
   <section id="purpose" aria-labelledby="purpose-title">
     <div class="container">
       <div class="panel centered-text">
@@ -305,7 +295,6 @@
     </div>
   </section>
 
-  <!-- Experience -->
   <section id="experience" aria-labelledby="experience-title">
     <div class="container">
       <div class="panel">
@@ -324,7 +313,6 @@
     </div>
   </section>
 
-  <!-- Services -->
   <section id="services" aria-labelledby="services-title">
     <div class="container">
       <div class="panel">
@@ -344,7 +332,6 @@
     </div>
   </section>
 
-  <!-- Expertise -->
   <section id="expertise" aria-labelledby="expertise-title">
     <div class="container">
       <div class="panel">
@@ -389,7 +376,7 @@
                   <li>RO/RO</li>
                   <li>Cable Ships</li>
                   <li>Factory Trawlers</li>
-		          <li>Fishing Vessels</li>
+		              <li>Fishing Vessels</li>
                   <li>Tug Boats</li>
                   <li>Barges</li>
                 </ul>
@@ -421,7 +408,6 @@
     </div>
   </section>
 
-  <!-- Program Integrity -->
   <section id="integrity" aria-labelledby="integrity-title">
     <div class="container">
       <div class="panel centered-text">
@@ -431,7 +417,6 @@
     </div>
   </section>
 
-  <!-- Contact -->
   <section id="contact" aria-labelledby="contact-title">
     <div class="container">
       <div class="panel centered-text">
@@ -441,7 +426,6 @@
             Send inquiries to discuss partnership opportunities for major sustainment programs,
             operational challenges, or long-term strategic support goals.
           </p>
-          <!-- Email obfuscation: href is set by JS on load -->
           <a class="btn" id="contact-link">hello@salinitymaritime.com</a>
         </div>
       </div>
@@ -544,7 +528,6 @@
 })();
 </script>
 
-<!-- ========= Background: one-shot on mobile & reduced-motion ========= -->
 <script>
 (function(){
   const canvas = document.getElementById('background-canvas');
@@ -552,8 +535,8 @@
   const ctx = canvas.getContext('2d', { alpha:false, desynchronized:true });
 
   // ---- Perf/behavior knobs ----
-  const DPR_CAP = 1.5;
-  const SCALE = 0.22;                 // internal texture scale
+  const DPR_CAP = 2;                  // UPDATED: From 1.5 to 2 for sharper rendering on retina screens
+  const SCALE = 0.45;                 // UPDATED: From 0.22 to 0.45 for a higher-resolution internal texture
   const RESIZE_REDRAW_DELAY_MS = 120; // debounce for resize/orientation
 
   // ONE SHOT MODE is true on phones / coarse pointers OR when reduced motion is enabled
@@ -738,7 +721,6 @@
 })();
 </script>
 
-<!-- ========= Email obfuscation ========= -->
 <script>
 (function(){
   // Protect the contact email link
