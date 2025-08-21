@@ -123,7 +123,7 @@
   /* Hero */
   .hero{ padding:88px 0 48px; }
   .hero .panel{ text-align:center; padding:40px 28px; }
-  h1{ margin:0 0 10px; font-weight:700; font-size:48px; letter-spacing:.2px; }
+  h1{ margin:0 0 10px; font-weight:700; font-size:48px; }
 
   /* “; accomplished” — keeps glow, adapts on small screens */
   h1 .accomplished{ color:var(--ink); }
@@ -149,7 +149,6 @@
 
   /* Grids */
   .values-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; margin-top:24px; list-style:none; padding:0; }
-  .value-card{ background: linear-gradient(to bottom right, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid var(--border); border-radius:12px; padding:18px; }
   .value-card h3{ font-family:var(--font-serif); font-size:20px; margin:0 0 6px; color:#eaf3f9; }
   .muted{ color:var(--muted); }
 
@@ -167,14 +166,7 @@
   .expertise-grid { display: grid; grid-template-columns: 1fr; gap: 32px; margin-top: 24px; }
   @media (min-width: 960px) { .expertise-grid { grid-template-columns: 1fr 1fr; } }
 
-  .platform-cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 18px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+  .platform-cards { display: grid; grid-template-columns: 1fr; gap: 18px; list-style: none; padding: 0; margin: 0; }
   @media (min-width: 640px) { .platform-cards { grid-template-columns: 1fr 1fr; } }
   .platform-list { list-style: none; padding: 0; margin: 12px 0 0; color: var(--muted); }
   .platform-list li { margin-bottom: 6px; }
@@ -203,7 +195,6 @@
   }
   @media (max-width: 640px){
     .values-grid, .stats, .cards, .platform-cards { grid-template-columns:1fr; }
-    /* h1 size override above applies here too */
   }
   </style>
 </head>
@@ -535,9 +526,9 @@
   const ctx = canvas.getContext('2d', { alpha:false, desynchronized:true });
 
   // ---- Perf/behavior knobs ----
-  const DPR_CAP = 1.5;                // REVERTED: Back to original value for high performance.
-  const SCALE = 0.22;                 // REVERTED: Back to original value for high performance.
-  const RESIZE_REDRAW_DELAY_MS = 120; // Debounce for resize/orientation.
+  const DPR_CAP = 1.5;
+  const SCALE = 0.22;
+  const RESIZE_REDRAW_DELAY_MS = 120;
 
   // ONE SHOT MODE is true on phones / coarse pointers OR when reduced motion is enabled.
   const mqCoarse  = matchMedia('(hover: none) and (pointer: coarse)');
@@ -601,7 +592,6 @@
   let imgData = null;
 
   let W=0, H=0, DPR=1;
-  // Store last known dimensions to prevent redraw on scroll
   let lastW = 0;
 
   function buildGrain(){
@@ -629,19 +619,21 @@
     tex.height = Math.max(200, Math.floor(H*SCALE));
     imgData = tctx.createImageData(tex.width, tex.height);
     buildGrain();
-    // Update last known width
     lastW = W;
   }
+
+  let firstPainted = false;    // WATCHDOG state
+  let hardStop     = false;    // if watchdog fires, prevent RAF loop
 
   function drawFrame(ts){
     const data = imgData.data;
     const cw = tex.width, ch = tex.height;
     const t = ts * 0.000008;
 
-    /* --- Aspect-correct sampling to avoid vertical stretch on tall iPhones --- */
+    /* Aspect-correct sampling to avoid vertical stretch */
     const k  = Math.min(cw, ch);
-    const sx = k / cw;   // scale X samples to min dimension
-    const sy = k / ch;   // scale Y samples to min dimension
+    const sx = k / cw;
+    const sy = k / ch;
     const aspect = cw / ch;
 
     const baseS = 0.010, flowS = 0.0045, warp = 22, grainMix = 0.06;
@@ -650,21 +642,17 @@
     let i=0;
     for(let y=0;y<ch;y++){
       for(let x=0;x<cw;x++){
-        // flow field (aspect-correct)
         const vx = noise(x*flowS*sx + t*12, y*flowS*sy);
         const vy = noise(x*flowS*sx,        y*flowS*sy + t*12);
         const ox = warp * vx, oy = warp * vy;
 
-        // main fbm (aspect-correct)
         let v = fbm((x+ox)*baseS*sx + t*6, (y+oy)*baseS*sy - t*6, 5, 1.95, 0.55);
 
-        // isotropic radial center (scale Y by aspect so circle stays round)
         const nx = x/cw, ny = y/ch;
         const dx = nx - cx, dy = (ny - cy) * aspect;
         const center = Math.max(0, 1 - Math.sqrt(dx*dx + dy*dy) / 0.9);
         v = 0.88*v + 0.12*center;
 
-        // fine grain
         const gr = fbm(x*0.12*sx+100, y*0.12*sy+200, 2, 2.1, 0.6);
         v = Math.min(1, Math.max(0, v + (gr - 0.5) * grainMix));
 
@@ -677,6 +665,7 @@
     if (grainPattern){
       ctx.save(); ctx.globalAlpha = 0.06; ctx.fillStyle = grainPattern; ctx.fillRect(0,0,W,H); ctx.restore();
     }
+    firstPainted = true; // WATCHDOG: we successfully painted at least one frame
   }
 
   // ---- Run mode selection ----
@@ -684,10 +673,10 @@
 
   let rafId = null, last = 0, startTs = 0;
   function animate(ts){
+    if (hardStop) return; // WATCHDOG: bail out if fallback took over
     if (!startTs) startTs = ts;
     const elapsed = ts - startTs;
 
-    // cap to ~30 fps
     if (ts - last >= (1000 / 30)) { last = ts; drawFrame(ts); }
 
     if (elapsed >= STOP_AFTER_MS) { rafId = null; return; }
@@ -701,17 +690,28 @@
 
   // Initial sizing + first paint
   resize();
-  if (isOneShot()){ renderOnce(); } else { requestAnimationFrame(animate); }
+  if (isOneShot()){
+    renderOnce();
+  } else {
+    requestAnimationFrame(animate);
+
+    /* ===== WATCHDOG FALLBACK =====
+       If no frame has painted within 600ms (old Edge / throttled RAF),
+       draw one frame and stop so we never show a blank background. */
+    setTimeout(()=>{
+      if (!firstPainted){
+        hardStop = true;
+        renderOnce();
+      }
+    }, 600);
+  }
 
   // Redraw single frame on resize/orientation in one-shot mode
   let tResize;
   function onResized(){
     clearTimeout(tResize);
     tResize = setTimeout(()=>{
-      // FIXED: Only check if width has changed to prevent redraw on vertical scroll.
-      if (window.innerWidth === lastW) {
-        return; // Do nothing if only the height changed
-      }
+      if (window.innerWidth === lastW) return; // ignore height-only changes
       resize();
       if (isOneShot() || !rafId){ renderOnce(); }
     }, RESIZE_REDRAW_DELAY_MS);
