@@ -535,8 +535,8 @@
   const ctx = canvas.getContext('2d', { alpha:false, desynchronized:true });
 
   // ---- Perf/behavior knobs ----
-  const DPR_CAP = 2.5;                // INCREASED: For max sharpness on high-res screens.
-  const SCALE = 0.65;                 // INCREASED: For a much more detailed internal texture.
+  const DPR_CAP = 1.5;                // REVERTED: Back to original value for high performance.
+  const SCALE = 0.22;                 // REVERTED: Back to original value for high performance.
   const RESIZE_REDRAW_DELAY_MS = 120; // Debounce for resize/orientation.
 
   // ONE SHOT MODE is true on phones / coarse pointers OR when reduced motion is enabled.
@@ -602,7 +602,7 @@
 
   let W=0, H=0, DPR=1;
   // Store last known dimensions to prevent redraw on scroll
-  let lastW = 0, lastH = 0;
+  let lastW = 0;
 
   function buildGrain(){
     const sz = 160;
@@ -629,9 +629,8 @@
     tex.height = Math.max(200, Math.floor(H*SCALE));
     imgData = tctx.createImageData(tex.width, tex.height);
     buildGrain();
-    // Update last known dimensions
+    // Update last known width
     lastW = W;
-    lastH = H;
   }
 
   function drawFrame(ts){
@@ -709,9 +708,9 @@
   function onResized(){
     clearTimeout(tResize);
     tResize = setTimeout(()=>{
-      // Check to see if dimensions actually changed before redrawing
-      if (window.innerWidth === lastW && window.innerHeight === lastH) {
-        return; // Do nothing if the size is the same
+      // FIXED: Only check if width has changed to prevent redraw on vertical scroll.
+      if (window.innerWidth === lastW) {
+        return; // Do nothing if only the height changed
       }
       resize();
       if (isOneShot() || !rafId){ renderOnce(); }
