@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Salinity Maritime • Complex Ship Repair & Sustainment</title>
 
-  <meta name="description" content="We partner with contractors and program offices to manage complex vessel sustainment programs, modernize shipyard operations, and deliver results. Clear plans, reliable execution, on‑time mission readiness." />
+  <meta name="description" content="We partner with contractors and program offices to manage complex vessel sustainment programs, modernize shipyard operations, and deliver results. Clear plans, reliable execution, on-time mission readiness." />
   <meta name="theme-color" content="#07111a" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -234,6 +234,22 @@
     .values-grid, .stats, .cards, .platform-cards { grid-template-columns:1fr; }
   }
   </style>
+
+  <!-- noscript background wash so the page looks designed when JS is disabled -->
+  <noscript>
+    <style>
+      body {
+        background:
+          radial-gradient(140% 95% at 52% 18%, rgba(64,104,150,.42) 0%, rgba(7,17,26,0) 58%),
+          radial-gradient(130% 90% at 18% 78%, rgba(137,166,197,.34) 0%, rgba(7,17,26,0) 62%),
+          radial-gradient(120% 80% at 50% 96%, rgba(137,166,197,.22) 0%, rgba(7,17,26,0) 60%),
+          linear-gradient(180deg, #0b1621 0%, #07111a 72%);
+      }
+      #background-canvas, .vignette {
+        display: none;
+      }
+    </style>
+  </noscript>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
